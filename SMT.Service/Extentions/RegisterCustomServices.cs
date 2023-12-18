@@ -18,6 +18,8 @@ namespace SMT.Service.Extentions
             services.AddScoped<IRepository, EntityFrameworkRepository>();
         
             services.AddScoped<IPost, PostService>();
+            services.AddScoped<IUsers, UserService>();
+
           
 
         }

@@ -15,6 +15,8 @@ namespace SMT.Service.MappingConfiguration
         public AutoMapperProfile()
         {
             CreateMap<Post, PostModel>().ReverseMap();
+            CreateMap<User, UserModel>().ReverseMap();
+
             CreateMap<PagedData<Post>, PagedData<PostModel>>().ReverseMap();
         }
     }

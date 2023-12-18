@@ -28,7 +28,7 @@ namespace SMT.API.Controllers
         public async Task<IActionResult> AddPost([FromForm] PostModel model)
         {
 
-            model.PostedBy = 1;
+          
             int _id = await _PostService.AddPost(model);
             if (_id > 0)
             {
