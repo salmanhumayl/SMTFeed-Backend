@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using SMT.Model.Models;
 using SMT.ModelSQL.Models;
 using SMT.Service.Interface;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using VCT.API.Model;
 
 namespace SMT.API.Controllers
 {
@@ -15,10 +18,12 @@ namespace SMT.API.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly IUsers _userservice;
+        private IWebHostEnvironment _webHostEnvironment;
 
-        public AuthenticateController(IUsers userservice)
+        public AuthenticateController(IUsers userservice, IWebHostEnvironment webHostEnvironmen)
         {
             _userservice = userservice;
+            _webHostEnvironment = webHostEnvironmen;
         }
 
         [HttpPost("UserRegistration")]
@@ -26,9 +31,26 @@ namespace SMT.API.Controllers
         {
             if (model.TwoFactorCode == null)
             {
+                string body;
+                string mailcontent;
+                string emailResponse;
                 Random rnd = new Random();
-                string randomnumber = (rnd.Next(1000, 9999).ToString());
-                return Ok(randomnumber);
+                string TwoFAtoken = (rnd.Next(1000, 9999).ToString());
+                //Send OTP Email 
+
+                EmailManager VCTEmailService = new EmailManager();
+              
+                body = VCTEmailService.GetBody(Path.Combine(_webHostEnvironment.WebRootPath, @"Template\Registration-2FA-OTP.html"));
+                mailcontent = body.Replace("@Name", model.Name);
+                mailcontent = mailcontent.Replace("@pwdchangelink", TwoFAtoken);
+                VCTEmailService.Body = mailcontent;
+           
+                VCTEmailService.Subject = "SMT OTP";
+                VCTEmailService.ReceiverAddress = model.Email;
+                VCTEmailService.ReceiverDisplayName = model.Email;
+                emailResponse = await VCTEmailService.SendEmail();
+                return Ok(TwoFAtoken);
+
             }
             else
             {
