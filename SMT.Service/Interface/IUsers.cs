@@ -12,6 +12,9 @@ namespace SMT.Service.Interface
     {
         Task AddUserAsync (UserModel model);
 
-        User FindByNameAsync(string UserName, string Password);
+        User FindByNameAsync(string UserName);
+        bool CheckPasswordAsync(string UserName, string Password);
+        User FindByEmailAsync(string Email);
+
     }
 }

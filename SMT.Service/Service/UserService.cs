@@ -27,12 +27,29 @@ namespace SMT.Service.Service
             _repository.InsertModel(Usermodel);
             await _repository.SaveAsync();
         }
-
-        public User FindByNameAsync(string UserName, string Password)
+        
+        public bool CheckPasswordAsync(string UserName, string Password)
         {
-            var dccUsers = _repository.GetQueryable<User>().Where(a => a.UserName == UserName && a.Password == Password).SingleOrDefault();
+            var user= _repository.GetQueryable<User>().Where(a => a.UserName == UserName && a.Password==Password).SingleOrDefault();
+            if (user != null)
+                return true;
+            else
+                return false;
+        }
 
+        public User FindByEmailAsync(string Email)
+        {
+            var dccUsers = _repository.GetQueryable<User>().Where(a => a.Email ==Email).SingleOrDefault();
             return dccUsers;
         }
+
+     
+        public User FindByNameAsync(string UserName)
+        {
+            var dccUsers = _repository.GetQueryable<User>().Where(a => a.UserName == UserName).SingleOrDefault();
+            return dccUsers;
+        }
+
+       
     }
 }
