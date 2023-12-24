@@ -13,6 +13,7 @@ namespace SMT.ModelSQL.Models
         public int PostedBy { get; set; }
         public bool IsAttachment { get; set; }
         public bool? IsActive { get; set; }
+        public string FilePath { get; set; }
 
         public virtual User PostedByNavigation { get; set; }
     }

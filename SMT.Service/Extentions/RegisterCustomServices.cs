@@ -19,6 +19,7 @@ namespace SMT.Service.Extentions
         
             services.AddScoped<IPost, PostService>();
             services.AddScoped<IUsers, UserService>();
+            services.AddScoped<IFileUtilityService, FileUtilityService>();
 
           
 

@@ -18,12 +18,15 @@ namespace SMT.Service.Service
     {
         private readonly IRepository _repository;
         private IMapper _iMapper;
-     
-        public PostService(IRepository repository, IMapper iMapper)
+        private IFileUtilityService _fileUtilityService;
+
+        public PostService(IRepository repository, IMapper iMapper,IFileUtilityService fileUtilityService)
         {
             _repository = repository;
             _iMapper = iMapper;
-           
+            _fileUtilityService = fileUtilityService;
+
+
         }
 
         public async Task<int> AddPost(PostModel Postmodel)
@@ -90,13 +93,14 @@ namespace SMT.Service.Service
 
         }
 
-        public Task<string> ProcessDocument(IFormFile files, string FileName)
+        public async  Task<string> ProcessDocument(IFormFile files,string fileName)
         {
-            throw new NotImplementedException();
+            var filePath = await _fileUtilityService.WriteIFormFileOnNetwork(files, fileName);
+            return filePath;
         }
         public void UpdateFileName(string FileName, int ID)
         {
-            throw new NotImplementedException();
+            _repository.ExecuteRowSql("Update Post Set Path='" + FileName + "' Where id =" + ID);
         }
         public Task UpdatePost(PostModel model)
         {

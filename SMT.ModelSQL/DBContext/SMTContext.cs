@@ -22,7 +22,7 @@ namespace SMT.ModelSQL.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-         
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +34,8 @@ namespace SMT.ModelSQL.Models
                 entity.ToTable("Post");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.FilePath).IsUnicode(false);
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -54,9 +56,20 @@ namespace SMT.ModelSQL.Models
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.HasIndex(e => e.Email, "IX_Users-Email")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.UserName, "IX_Users-UserName")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.CreatedOn)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.Email)
+                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -65,14 +78,19 @@ namespace SMT.ModelSQL.Models
                     .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Name)
+                    .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(12)
+                    .IsRequired()
+                    .HasMaxLength(15)
                     .IsUnicode(false);
 
+                entity.Property(e => e.SubscriptionValidOn).HasColumnType("datetime");
+
                 entity.Property(e => e.UserName)
+                    .IsRequired()
                     .HasMaxLength(25)
                     .IsUnicode(false);
             });

@@ -34,10 +34,10 @@ namespace SMT.API.Controllers
             {
                 if (model.document != null)
                 {
-                    var res = await _PostService.ProcessDocument(model.document, "_id");
+                    var res = await _PostService.ProcessDocument(model.document,_id.ToString());
                     if (res != null)
                     {
-                        _PostService.UpdateFileName(res, _id);
+                  //      _PostService.UpdateFileName(res, _id);
                     }
                 }
 

@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+  	<FrameworkReference Include="Microsoft.AspNetCore.App"/>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    
   </ItemGroup>
 
   <ItemGroup>
