@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using SMT.Common.Model;
 using SMT.Model.Models;
 using SMT.Service.Interface;
 using SMT.Service.Service;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using VCT.API.Model;
 
 namespace SMT.API.Controllers
 {
@@ -16,19 +19,22 @@ namespace SMT.API.Controllers
     public class PostFeedController : ControllerBase
     {
         private IPost _PostService;
+        private IWebHostEnvironment _webHostEnvironment;
 
 
-
-        public PostFeedController(IPost PostService)
+        public PostFeedController(IPost PostService, IWebHostEnvironment webHostEnvironmen)
         {
             _PostService = PostService;
-        
+            _webHostEnvironment = webHostEnvironmen;
+
         }
         [HttpPost ("AddPost")]
         public async Task<IActionResult> AddPost([FromForm] PostModel model)
         {
+            string body;
+            string mailcontent;
+            EmailManager VCTEmailService = new EmailManager();
 
-          
             int _id = await _PostService.AddPost(model);
             if (_id > 0)
             {
@@ -41,6 +47,17 @@ namespace SMT.API.Controllers
                     }
                 }
 
+                //Send An Email to Administrator for newly added Post 
+
+
+                body = VCTEmailService.GetBody(Path.Combine(_webHostEnvironment.WebRootPath, @"Template\NewPostAdded.html"));
+                mailcontent = body.Replace("@Content", model.Post1);
+                VCTEmailService.Body = mailcontent;
+
+                VCTEmailService.Subject = "SuperMcxtip - Newly Added Post";
+                VCTEmailService.ReceiverAddress = "info@supermcxtip.com";
+                VCTEmailService.ReceiverDisplayName = "Supermcxtip";
+                await VCTEmailService.SendEmail();
                 return Ok(new { message ="ok" });
             }
 

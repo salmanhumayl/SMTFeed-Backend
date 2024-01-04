@@ -26,7 +26,7 @@ namespace VCT.API.Model
         {
             System.Net.Mail.MailMessage newemail = new System.Net.Mail.MailMessage();
             System.Net.Mail.MailAddress MailReceiver = new System.Net.Mail.MailAddress(ReceiverAddress, ReceiverDisplayName);
-            System.Net.Mail.MailAddress MailSender = new System.Net.Mail.MailAddress("humaylsalman@gmail.com", "SCM");
+            System.Net.Mail.MailAddress MailSender = new System.Net.Mail.MailAddress("info@supermcxtip.com", "SMT");
             newemail.From = MailSender;
             newemail.To.Add(MailReceiver);
             newemail.IsBodyHtml = true;
@@ -38,12 +38,13 @@ namespace VCT.API.Model
         private async Task<string> SendMail(System.Net.Mail.MailMessage MailMsg)
         {
             System.Net.Mail.SmtpClient newe = new System.Net.Mail.SmtpClient();
-            newe.Host = "smtp.gmail.com";
-            
-            newe.Port = 587;
-            newe.Credentials = new System.Net.NetworkCredential("humaylsalman@gmail.com", "sehprusmlyozedjm");
-          // newe.UseDefaultCredentials = true ;
-            newe.EnableSsl = true;
+              newe.Host = "supermcxtip.com";
+
+          //  newe.Host = "sg2nlvphout-v01.shr.prod.sin2.secureserver.net"; 
+            newe.Port = 25;
+            newe.Credentials = new System.Net.NetworkCredential("info@supermcxtip.com", "smt123@@"); //sehprusmlyozedjm
+            newe.UseDefaultCredentials = false ;
+            newe.EnableSsl = false;
             try
             {
                 await newe.SendMailAsync(MailMsg);

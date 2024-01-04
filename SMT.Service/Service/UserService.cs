@@ -24,6 +24,7 @@ namespace SMT.Service.Service
         public async Task AddUserAsync(UserModel model)
         {
             User Usermodel = _iMapper.Map<User>(model);
+            Usermodel.SubscriptionValidOn = DateTime.Now.AddDays(30);
             _repository.InsertModel(Usermodel);
             await _repository.SaveAsync();
         }

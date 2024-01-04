@@ -87,8 +87,12 @@ namespace SMT.API.Controllers
                 {
                     return Ok(new Iresult<User> { isSuccess = true, data = user });
                 }
+                else
+                {
+                    return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid Password" });
+                }
             }   
-                return Ok(new Iresult<User> { isSuccess = false }); 
+                return Ok(new Iresult<User> { isSuccess = false,Message= "Invalid UserName" }); 
        
         }
           
@@ -98,6 +102,7 @@ namespace SMT.API.Controllers
     public class Iresult<T>
     {
         public bool isSuccess { get; set; }
+       public string Message { get; set; }
         public T data { get; set; }
    
     }
