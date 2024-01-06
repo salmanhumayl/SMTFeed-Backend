@@ -19,6 +19,9 @@ namespace SMT.Model.Models
         public DateTime?  PostDate { get; set; }
         public IFormFile document { get; set; }
 
+        public bool IsAttachment { get; set; }
+        public string FilePath { get; set; }
+
         public virtual AbstractDropDown PostedByNavigation { get; set; }
 
        

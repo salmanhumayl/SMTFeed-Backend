@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SMT.ModelSQL.Models
 {
-    public partial class SMTContext : DbContext
+    public partial class SMTContextold : DbContext
     {
-        public SMTContext()
+        public SMTContextold()
         {
         }
 
-        public SMTContext(DbContextOptions<SMTContext> options)
+        public SMTContextold(DbContextOptions<SMTContextold> options)
             : base(options)
         {
         }
@@ -22,7 +22,10 @@ namespace SMT.ModelSQL.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+            if (!optionsBuilder.IsConfigured)
+            {
+
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,7 +44,9 @@ namespace SMT.ModelSQL.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.Post1).HasColumnName("Post");
+                entity.Property(e => e.Post1)
+                    .IsUnicode(false)
+                    .HasColumnName("Post");
 
                 entity.Property(e => e.PostDate).HasColumnType("datetime");
 

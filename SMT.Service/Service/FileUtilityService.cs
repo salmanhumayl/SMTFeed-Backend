@@ -36,8 +36,8 @@ namespace SMT.Service.Service
 
             if (file.Length > 0)
             {
-                string fileExtension = GetFileExtenison(file.FileName);
-                filePath = Path.Combine(filePath, "SCM_" + fileName + "." + fileExtension);
+                //string fileExtension = GetFileExtenison(file.FileName);
+                filePath = Path.Combine(filePath,  fileName );
                 try
                 {
                     using (Stream stream = new FileStream(filePath, FileMode.Create))
@@ -49,7 +49,7 @@ namespace SMT.Service.Service
                 {
                     return "X99" + ex.Message;
                 }
-                return fileName + "." + fileExtension;
+                return fileName;
 
             }
             return null;

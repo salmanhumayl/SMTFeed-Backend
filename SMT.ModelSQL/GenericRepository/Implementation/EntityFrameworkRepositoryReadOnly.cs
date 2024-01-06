@@ -14,10 +14,10 @@ namespace SMT.ModelSQL.GenericRepository.Implementation
 {
     public class EntityFrameworkRepositoryReadOnly : IRepositoryReadOnly
     {
-        private SMTContext _DbContext;
+        private SMTContextold _DbContext;
 
         public IConfiguration Configuration { get; }
-        public EntityFrameworkRepositoryReadOnly(SMTContext context, IConfiguration configuration)
+        public EntityFrameworkRepositoryReadOnly(SMTContextold context, IConfiguration configuration)
         {
             _DbContext = context;
             Configuration = configuration;

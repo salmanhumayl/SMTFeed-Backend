@@ -36,7 +36,7 @@ namespace SMT.API
             //Adding AutoMapper Profiles
             services.AddAutoMapper(c => c.AddProfile<CustomAutoMaperConfiguration>(), typeof(Startup));
 
-            services.AddDbContext<SMTContext>(
+            services.AddDbContext<SMTContextold>(
             options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
             services.AddServices();

@@ -85,7 +85,9 @@ namespace SMT.Service.Service
                           {
                               Post1 = pp.Post1,
                               PostedByName = u.Name,
-                              PostDate=pp.PostDate
+                              PostDate=pp.PostDate,
+                              FilePath=pp.FilePath,
+                              IsAttachment=pp.IsAttachment
 
                           }).ToListAsync().ConfigureAwait(false);
 

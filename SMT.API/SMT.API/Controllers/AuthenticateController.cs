@@ -15,7 +15,7 @@ namespace SMT.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class AuthenticateController : ControllerBase
     {
         private readonly IUsers _userservice;
@@ -30,22 +30,22 @@ namespace SMT.API.Controllers
         }
 
         [HttpPost("UserRegistration")]
-        public async Task<IActionResult> UserRegistration (UserModel model)
+        public async Task<IActionResult> UserRegistration(UserModel model)
         {
             if (model.TwoFactorCode == null)
             {
                 //check Email Already Exist 
-                var  userByEmailExists = _userservice.FindByEmailAsync(model.Email);
-                var  userByNameExists = _userservice.FindByNameAsync(model.UserName);
+                var userByEmailExists = _userservice.FindByEmailAsync(model.Email);
+                var userByNameExists = _userservice.FindByNameAsync(model.UserName);
 
                 if (userByEmailExists != null)
 
                     //   return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "Email already exists!" });
-                    return Ok( new Response { Status = "Error", Message = "Email already exists!" });
+                    return Ok(new Response { Status = "Error", Message = "Email already exists!" });
 
                 if ((userByNameExists != null))
                     //  return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User already exists!" });
-                      return Ok(new Response { Status = "Error", Message = "User already exists!" });
+                    return Ok(new Response { Status = "Error", Message = "User already exists!" });
 
 
                 Random rnd = new Random();
@@ -53,12 +53,12 @@ namespace SMT.API.Controllers
                 //Send OTP Email 
 
                 EmailManager VCTEmailService = new EmailManager();
-              
+
                 body = VCTEmailService.GetBody(Path.Combine(_webHostEnvironment.WebRootPath, @"Template\Registration-2FA-OTP.html"));
                 mailcontent = body.Replace("@Name", model.Name);
                 mailcontent = mailcontent.Replace("@pwdchangelink", TwoFAtoken);
                 VCTEmailService.Body = mailcontent;
-           
+
                 VCTEmailService.Subject = "SMT OTP";
                 VCTEmailService.ReceiverAddress = model.Email;
                 VCTEmailService.ReceiverDisplayName = model.Email;
@@ -68,12 +68,12 @@ namespace SMT.API.Controllers
             }
             else
             {
-                if (model.TwoFactorCode== model.GenerateFactorCode)
-                await _userservice.AddUserAsync(model);
+                if (model.TwoFactorCode == model.GenerateFactorCode)
+                    await _userservice.AddUserAsync(model);
                 return Ok(new Response { Status = "Success", Message = "User created successfully!" });
             }
         }
-         
+
 
 
         [HttpPost("Login")]
@@ -91,13 +91,24 @@ namespace SMT.API.Controllers
                 {
                     return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid Password" });
                 }
-            }   
-                return Ok(new Iresult<User> { isSuccess = false,Message= "Invalid UserName" }); 
-       
+            }
+            return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid UserName" });
+
         }
-          
+
+        [HttpGet("Path")]
+        public string  ShowPath()
+        {
+            return _webHostEnvironment.WebRootPath.ToString();
+
+
+
         }
+
     }
+
+
+}
 
     public class Iresult<T>
     {

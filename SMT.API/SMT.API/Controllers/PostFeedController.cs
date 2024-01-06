@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using SMT.Common.Model;
 using SMT.Model.Models;
 using SMT.Service.Interface;
@@ -35,21 +36,21 @@ namespace SMT.API.Controllers
             string mailcontent;
             EmailManager VCTEmailService = new EmailManager();
 
+            #region File Upload
+            if (model.document != null)
+            {
+                string fileName = Guid.NewGuid().ToString() + '-' + Path.GetFileName(model.document.FileName);
+                var res = await _PostService.ProcessDocument(model.document, fileName);
+                model.FilePath = fileName;
+                model.IsAttachment = true;
+            }
+            #endregion
+
+
             int _id = await _PostService.AddPost(model);
             if (_id > 0)
             {
-                if (model.document != null)
-                {
-                    var res = await _PostService.ProcessDocument(model.document,_id.ToString());
-                    if (res != null)
-                    {
-                  //      _PostService.UpdateFileName(res, _id);
-                    }
-                }
-
                 //Send An Email to Administrator for newly added Post 
-
-
                 body = VCTEmailService.GetBody(Path.Combine(_webHostEnvironment.WebRootPath, @"Template\NewPostAdded.html"));
                 mailcontent = body.Replace("@Content", model.Post1);
                 VCTEmailService.Body = mailcontent;
@@ -87,8 +88,7 @@ namespace SMT.API.Controllers
         }
 
 
-
-        
+               
 
         [HttpGet("GetPostInclude")]
         public async Task<IActionResult> GetPostInclude()
@@ -98,7 +98,42 @@ namespace SMT.API.Controllers
             return Ok(posts);
         }
 
+
+        [HttpGet, DisableRequestSizeLimit]
+        [Route("DownloadSupportFiles")]
+        public async Task<IActionResult> DownloadSupportFiles(string fileName)
+        {
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", fileName);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var memory = new MemoryStream();
+            await using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            return File(memory, GetContentType(filePath), fileName);
+        }
+
+        private string GetContentType(string path)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+
+            if (!provider.TryGetContentType(path, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return contentType;
+        }
+
+
     }
 
-   
+
 }
