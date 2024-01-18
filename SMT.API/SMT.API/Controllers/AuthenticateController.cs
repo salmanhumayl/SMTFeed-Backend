@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SMT.Model.Models;
 using SMT.ModelSQL.Models;
 using SMT.Service.Interface;
@@ -20,13 +21,16 @@ namespace SMT.API.Controllers
     {
         private readonly IUsers _userservice;
         private IWebHostEnvironment _webHostEnvironment;
+        private IConfiguration _configuration;
+
         string body;
         string mailcontent;
         string emailResponse;
-        public AuthenticateController(IUsers userservice, IWebHostEnvironment webHostEnvironmen)
+        public AuthenticateController(IUsers userservice, IWebHostEnvironment webHostEnvironmen, IConfiguration configuration)
         {
             _userservice = userservice;
             _webHostEnvironment = webHostEnvironmen;
+            _configuration = configuration;
         }
 
         [HttpPost("UserRegistration")]
@@ -35,8 +39,8 @@ namespace SMT.API.Controllers
             if (model.TwoFactorCode == null)
             {
                 //check Email Already Exist 
-                var userByEmailExists = _userservice.FindByEmailAsync(model.Email);
-                var userByNameExists = _userservice.FindByNameAsync(model.UserName);
+                var userByEmailExists = await _userservice.FindByEmailAsync(model.Email);
+                var userByNameExists = await _userservice.FindByNameAsync(model.UserName);
 
                 if (userByEmailExists != null)
 
@@ -77,10 +81,10 @@ namespace SMT.API.Controllers
 
 
         [HttpPost("Login")]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
 
-            User user = _userservice.FindByNameAsync(model.UserName);
+            User user = await _userservice.FindByNameAsync(model.UserName);
             if (user != null)
             {
                 if (_userservice.CheckPasswordAsync(user.UserName, model.Password))
@@ -95,6 +99,77 @@ namespace SMT.API.Controllers
             return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid UserName" });
 
         }
+
+
+
+        [HttpPost]
+        [Route("forgetpwd")]
+        public async Task<IActionResult> forgetpassword(ForgetPasswordEmaiModel forgetmodel)
+        {
+
+            var userByEmailExists = await _userservice.FindByEmailAsync(forgetmodel.EmailAddress);
+
+            if (userByEmailExists == null)
+                //return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "Email does not exist!" });
+                return Ok(new Response { Status = "Error",Message= "Email does not exist!" });
+            string mGuid = Guid.NewGuid().ToString();
+          
+
+            ForgetPasswordModel model = new ForgetPasswordModel();
+            model.Guid = mGuid;
+            model.UserID = userByEmailExists.Id;
+            var response = await _userservice.ForgetPasswrod(model);
+        
+            if (response == 1) //Send EMAIL TO User 
+            {
+
+                string url = _configuration["ForgetPassword:Url"];
+                string Link = url + "?token=" + mGuid;
+                EmailManager VCTEmailService = new EmailManager();
+                VCTEmailService.Configuration = _configuration;
+                string body = VCTEmailService.GetBody(Path.Combine(_webHostEnvironment.WebRootPath, @"Template\ForgetPassword.html"));
+                mailcontent = body.Replace("@pwdchangelink", Link); //Replace Contenct...
+                mailcontent = mailcontent.Replace("@Name", userByEmailExists.Name); //Replace Contenct...
+                VCTEmailService.Body = mailcontent;
+                VCTEmailService.Subject = _configuration["ForgetPassword:Subject"];
+                VCTEmailService.ReceiverAddress = forgetmodel.EmailAddress;
+                VCTEmailService.ReceiverDisplayName = userByEmailExists.Name;
+                emailResponse = await VCTEmailService.SendEmail();
+                return Ok(new Response { Status = "Success" ,Message= "Instruction to reset your password were sent to your registered email." });
+            }
+            return Ok("Error");
+        }
+
+
+        [Route("forgetpwdupdate"), HttpPost] //Reset Password
+        public async Task<IActionResult> forgetpwdupdate(ChangePasswordViewModel model)
+        {
+            var forgetinfo = _userservice.PwdLogUserInfo(model.token);
+            if (forgetinfo != null)
+            {
+                var user = await _userservice.FindByIdAsync(forgetinfo.UserId);
+                var result = await _userservice.UpdatePassword(user.Id,model.NewPassword);
+                if (result > 0 )
+                {
+                    var response = await _userservice.UpdatePasswordStatus(forgetinfo.Id);
+                    EmailManager EmailService = new EmailManager();
+                    EmailService.Configuration = _configuration;
+                    string body = EmailService.GetBody(Path.Combine(_webHostEnvironment.WebRootPath, @"Template\ChangePassword.html"));
+                    EmailService.Body = body.Replace("@Name", user.Name); //Replace Contenct.
+                    EmailService.Subject = _configuration["ChangePassword:Subject"];
+                    EmailService.ReceiverAddress = user.Email;
+                    EmailService.ReceiverDisplayName = user.Email;
+                    emailResponse = await EmailService.SendEmail();
+                    return Ok(new Response { Status = "Success", Message = "successfully!" });
+                }
+                
+            }
+
+            //   return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Link has been expired / Password has been Updated...!" });
+            return Ok(new Response { Status = "Error", Message = "Link has been expired / Password has been Updated...!" });
+
+        }
+
 
         [HttpGet("Path")]
         public string  ShowPath()

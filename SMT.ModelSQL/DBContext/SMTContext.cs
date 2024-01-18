@@ -18,11 +18,12 @@ namespace SMT.ModelSQL.Models
         }
 
         public virtual DbSet<Post> Posts { get; set; }
+        public virtual DbSet<SmtForgetPwdLog> SmtForgetPwdLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+           
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,7 +42,11 @@ namespace SMT.ModelSQL.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.Post1).HasColumnName("Post");
+                entity.Property(e => e.Post1)
+                 .HasColumnType("nvarchar(max)")
+                 .UseCollation("LATIN1_GENERAL_100_CI_AS_SC_UTF8")
+                 .IsUnicode()
+                .HasColumnName("Post");
 
                 entity.Property(e => e.PostDate).HasColumnType("datetime");
 
@@ -50,6 +55,27 @@ namespace SMT.ModelSQL.Models
                     .HasForeignKey(d => d.PostedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Post_Users");
+            });
+
+            modelBuilder.Entity<SmtForgetPwdLog>(entity =>
+            {
+                entity.ToTable("SMT_ForgetPwdLog");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Guid)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('X')")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
             });
 
             modelBuilder.Entity<User>(entity =>

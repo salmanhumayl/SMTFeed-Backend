@@ -12,9 +12,16 @@ namespace SMT.Service.Interface
     {
         Task AddUserAsync (UserModel model);
 
-        User FindByNameAsync(string UserName);
+        Task<User> FindByIdAsync(int UserId);
+        Task<User> FindByNameAsync(string UserName);
         bool CheckPasswordAsync(string UserName, string Password);
-        User FindByEmailAsync(string Email);
+        Task<User> FindByEmailAsync(string Email);
+
+        SmtForgetPwdLog PwdLogUserInfo(string token);
+        Task<int> ForgetPasswrod(ForgetPasswordModel model);
+
+        Task<int>UpdatePassword(int Id, string NewPassword);
+        Task<int> UpdatePasswordStatus(int ID);
 
     }
 }

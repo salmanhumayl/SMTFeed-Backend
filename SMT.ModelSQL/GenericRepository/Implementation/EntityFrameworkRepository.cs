@@ -13,8 +13,8 @@ namespace SMT.ModelSQL.GenericRepository.Implementation
     public class EntityFrameworkRepository : EntityFrameworkRepositoryReadOnly, IRepository
     {
 
-        private readonly SMTContextold _DbContext;
-        public EntityFrameworkRepository(SMTContextold context, IConfiguration configuration) : base(context, configuration)
+        private readonly SMTContext _DbContext;
+        public EntityFrameworkRepository(SMTContext context, IConfiguration configuration) : base(context, configuration)
         {
             _DbContext = context;
 
@@ -38,9 +38,9 @@ namespace SMT.ModelSQL.GenericRepository.Implementation
             throw new NotImplementedException();
         }
 
-        public void ExecuteRowSql(string query)
+        public async Task<int> ExecuteRowSql(string query)
         {
-            throw new NotImplementedException();
+            return await _DbContext.Database.ExecuteSqlRawAsync(query);
         }
 
         public async Task<IEnumerable<T>> GetModelAsync<T>() where T : class

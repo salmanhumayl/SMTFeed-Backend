@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SMT.Model.Models
 {
     public class PostModel
     {
         public int Id { get; set; }
+       
         public string Post1 { get; set; }
 
      

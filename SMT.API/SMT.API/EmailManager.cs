@@ -40,7 +40,7 @@ namespace VCT.API.Model
             System.Net.Mail.SmtpClient newe = new System.Net.Mail.SmtpClient();
               newe.Host = "supermcxtip.com";
 
-          //  newe.Host = "sg2nlvphout-v01.shr.prod.sin2.secureserver.net"; 
+           // newe.Host = "sg2nlvphout-v01.shr.prod.sin2.secureserver.net"; 
             newe.Port = 25;
             newe.Credentials = new System.Net.NetworkCredential("info@supermcxtip.com", "smt123@@"); //sehprusmlyozedjm
             newe.UseDefaultCredentials = false ;

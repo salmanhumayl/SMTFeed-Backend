@@ -38,19 +38,54 @@ namespace SMT.Service.Service
                 return false;
         }
 
-        public User FindByEmailAsync(string Email)
+        public async Task<User> FindByEmailAsync(string Email)
         {
             var dccUsers = _repository.GetQueryable<User>().Where(a => a.Email ==Email).SingleOrDefault();
-            return dccUsers;
+            return await Task.FromResult(dccUsers);
         }
 
-     
-        public User FindByNameAsync(string UserName)
+        public async Task<User> FindByIdAsync(int UserId)
+        {
+            var dccUsers = _repository.GetQueryable<User>().Where(a => a.Id == UserId).SingleOrDefault();
+            return await Task.FromResult(dccUsers);
+        }
+
+        public async Task<User> FindByNameAsync(string UserName)
         {
             var dccUsers = _repository.GetQueryable<User>().Where(a => a.UserName == UserName).SingleOrDefault();
-            return dccUsers;
+            return await Task.FromResult(dccUsers);
         }
 
-       
+        public async Task<int> ForgetPasswrod(ForgetPasswordModel forgetpasswordmodel)
+        {
+
+           SmtForgetPwdLog model = _iMapper.Map<SmtForgetPwdLog>(forgetpasswordmodel);
+            _repository.InsertModel(model);
+            await _repository.SaveAsync();
+            return 1; 
+
+           
+        }
+
+        public SmtForgetPwdLog PwdLogUserInfo(string token)
+        {
+            var dccUsers = _repository.GetQueryable<SmtForgetPwdLog>().Where(a => a.Guid == token && a.Status == "X").SingleOrDefault();
+            return dccUsers;
+          
+        }
+
+        public async Task<int> UpdatePassword(int Id, string NewPassword)
+        {
+            return await _repository.ExecuteRowSql("Update Users Set Password='" + NewPassword + "' Where ID =" + Id);
+
+        }
+
+        public async Task<int> UpdatePasswordStatus(int ID)
+        {
+            return await _repository.ExecuteRowSql("Update SMT_ForgetPwdLog Set Status='C' Where ID =" + ID);
+            
+        }
+
+        
     }
 }

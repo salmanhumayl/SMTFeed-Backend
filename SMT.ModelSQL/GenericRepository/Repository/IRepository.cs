@@ -18,6 +18,6 @@ namespace SMT.ModelSQL.GenericRepository.Repository
         Task<IEnumerable<T>> GetModelAsync<T>() where T : class;
         Task<T> GetModelByIdAsync<T>(int modelId) where T : class;
 
-        void ExecuteRowSql(string query);
+        Task<int> ExecuteRowSql(string query);
     }
 }
