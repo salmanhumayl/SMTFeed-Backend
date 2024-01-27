@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SMT.ModelSQL.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,7 +25,8 @@ namespace SMT.Model.Models
         public bool IsAttachment { get; set; }
         public string FilePath { get; set; }
 
-        public virtual AbstractDropDown PostedByNavigation { get; set; }
+        public virtual User PostedByNavigation { get; set; }
+      //  public virtual AbstractDropDown PostedByNavigation { get; set; }
 
        
     }

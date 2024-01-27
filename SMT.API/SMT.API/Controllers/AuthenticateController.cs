@@ -89,6 +89,7 @@ namespace SMT.API.Controllers
             {
                 if (_userservice.CheckPasswordAsync(user.UserName, model.Password))
                 {
+
                     return Ok(new Iresult<User> { isSuccess = true, data = user });
                 }
                 else
@@ -100,6 +101,30 @@ namespace SMT.API.Controllers
 
         }
 
+
+
+        [HttpPost]
+        [Route("AdminLoginIn")]
+        public async Task<IActionResult> AdminLoginIn(LoginModel model)
+        {
+
+            User user = await _userservice.FindByNameAsync(model.UserName);
+            if (user != null)
+            {
+
+                if (_userservice.CheckPasswordAsync(user.UserName, model.Password))
+                {
+
+                    return Ok(new Iresult<User> { isSuccess = true, data = user });
+                }
+                else
+                {
+                    return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid Password" });
+                }
+            }
+            return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid UserName" });
+
+        }
 
 
         [HttpPost]
@@ -168,6 +193,16 @@ namespace SMT.API.Controllers
             //   return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "Error", Message = "Link has been expired / Password has been Updated...!" });
             return Ok(new Response { Status = "Error", Message = "Link has been expired / Password has been Updated...!" });
 
+        }
+
+
+
+        [HttpGet]
+        [Route("GetUsers")]
+        public async Task<IActionResult> GetUser()
+        {
+            var Users = await _userservice.GetUsers();
+            return Ok(Users);
         }
 
 

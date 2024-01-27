@@ -22,13 +22,13 @@ namespace SMT.ModelSQL.GenericRepository.Implementation
             _DbContext = context;
             Configuration = configuration;
         }
-       public virtual async Task<PagedData<T>> GetPageModelAsync<T>(int pageNo, int pageSize, Expression<Func<T, bool>> filter = null
-          , string[] includes = null
-          ) where T : class {
+     //  public virtual async Task<PagedData<T>> GetPageModelAsync<T>(int pageNo, int pageSize, Expression<Func<T, bool>> filter = null
+       //   , string[] includes = null
+       //   ) where T : class {
 
 
-            //  public virtual async Task<PagedData<T>> GetPageModelAsync<T>(int pageNo, int pageSize, Expression<Func<T, DateTime>> filter = null) where T : class
-       //
+             public virtual async Task<PagedData<T>> GetPageModelAsync<T>(int pageNo, int pageSize, Expression<Func<T, DateTime>> filter = null, string[] includes = null) where T : class
+        { 
             IQueryable<T> dbSet = _DbContext.Set<T>();
 
             if (includes != null)
@@ -43,7 +43,7 @@ namespace SMT.ModelSQL.GenericRepository.Implementation
             if (filter != null)
             {
                 dbSet = dbSet.OrderByDescending(filter);
-                dbSet = dbSet.Where(filter);
+               // dbSet = dbSet.Where(filter);
             }
 
 

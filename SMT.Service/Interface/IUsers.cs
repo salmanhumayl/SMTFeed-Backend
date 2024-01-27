@@ -23,5 +23,7 @@ namespace SMT.Service.Interface
         Task<int>UpdatePassword(int Id, string NewPassword);
         Task<int> UpdatePasswordStatus(int ID);
 
+        Task<IEnumerable<UserListModel>> GetUsers();
+
     }
 }

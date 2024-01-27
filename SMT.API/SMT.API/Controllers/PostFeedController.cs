@@ -71,9 +71,9 @@ namespace SMT.API.Controllers
 
 
         [HttpGet("GetPost")]
-        public async Task<IActionResult> GetPost(int pageNumber)
+        public async Task<IActionResult> GetPost(int pageNumber,int pageSize)
         {
-            PagedData<PostModel> posts = await _PostService.GetPost(pageNumber, 10);
+            PagedData<PostModel> posts = await _PostService.GetPost(pageNumber, pageSize);
 
        
             return Ok(posts);

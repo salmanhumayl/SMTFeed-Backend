@@ -67,6 +67,12 @@ namespace SMT.Service.Service
            
         }
 
+        public async Task<IEnumerable<UserListModel>> GetUsers()
+        {
+            IEnumerable<User> user = await _repository.GetModelAsync<User>();
+            return _iMapper.Map<IEnumerable<UserListModel>>(user);
+        }
+
         public SmtForgetPwdLog PwdLogUserInfo(string token)
         {
             var dccUsers = _repository.GetQueryable<SmtForgetPwdLog>().Where(a => a.Guid == token && a.Status == "X").SingleOrDefault();

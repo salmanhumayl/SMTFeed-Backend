@@ -16,6 +16,7 @@ namespace SMT.Service.MappingConfiguration
         {
             CreateMap<Post, PostModel>().ReverseMap();
             CreateMap<User, UserModel>().ReverseMap();
+            CreateMap<User, UserListModel>().ReverseMap();
             CreateMap<SmtForgetPwdLog, ForgetPasswordModel>().ReverseMap();
 
             CreateMap<PagedData<Post>, PagedData<PostModel>>().ReverseMap();

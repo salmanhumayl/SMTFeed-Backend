@@ -41,9 +41,9 @@ namespace SMT.Service.Service
 
         public async Task<PagedData<PostModel>> GetPost(int pageNo, int pageSize)  
         {
-            PagedData<Post> Posts = await _repository.GetPageModelAsync<Post>(pageNo, pageSize, null, new string[] {"PostedByNavigation"});
+         //   PagedData<Post> Posts = await _repository.GetPageModelAsync<Post>(pageNo, pageSize, null, new string[] {"PostedByNavigation"});
             
-            //PagedData<Post> Posts = await _repository.GetPageModelAsync<Post>(pageNo, pageSize, a => a.PostDate);
+            PagedData<Post> Posts = await _repository.GetPageModelAsync<Post>(pageNo, pageSize, a => a.PostDate, new string[] { "PostedByNavigation" });
             return _iMapper.Map<PagedData<PostModel>>(Posts);
         }
 
