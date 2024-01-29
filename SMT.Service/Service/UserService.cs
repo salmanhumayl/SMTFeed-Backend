@@ -40,6 +40,7 @@ namespace SMT.Service.Service
 
         public async Task<User> FindByEmailAsync(string Email)
         {
+
             var dccUsers = _repository.GetQueryable<User>().Where(a => a.Email ==Email).SingleOrDefault();
             return await Task.FromResult(dccUsers);
         }
@@ -69,7 +70,9 @@ namespace SMT.Service.Service
 
         public async Task<IEnumerable<UserListModel>> GetUsers()
         {
-            IEnumerable<User> user = await _repository.GetModelAsync<User>();
+          //  IEnumerable<User> user = await _repository.GetModelAsync<User>();
+            IEnumerable<User> user = await _repository.CheckNumber<User>(x=>x.CreatedOn);
+
             return _iMapper.Map<IEnumerable<UserListModel>>(user);
         }
 

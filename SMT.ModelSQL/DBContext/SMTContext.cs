@@ -23,7 +23,7 @@ namespace SMT.ModelSQL.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           
+          
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,10 +43,10 @@ namespace SMT.ModelSQL.Models
                     .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Post1)
-                 .HasColumnType("nvarchar(max)")
-                 .UseCollation("LATIN1_GENERAL_100_CI_AS_SC_UTF8")
-                 .IsUnicode()
-                .HasColumnName("Post");
+                .HasColumnType("nvarchar(max)")
+                .UseCollation("LATIN1_GENERAL_100_CI_AS_SC_UTF8")
+                .IsUnicode()
+               .HasColumnName("Post");
 
                 entity.Property(e => e.PostDate).HasColumnType("datetime");
 
@@ -117,6 +117,13 @@ namespace SMT.ModelSQL.Models
                     .IsRequired()
                     .HasMaxLength(25)
                     .IsUnicode(false);
+
+                entity.Property(e => e.UserType)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('U')")
+                    .IsFixedLength(true);
             });
 
             OnModelCreatingPartial(modelBuilder);

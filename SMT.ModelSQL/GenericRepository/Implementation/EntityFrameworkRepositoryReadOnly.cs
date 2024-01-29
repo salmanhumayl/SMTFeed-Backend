@@ -54,5 +54,14 @@ namespace SMT.ModelSQL.GenericRepository.Implementation
         {
               return _DbContext.Set<T>();
         }
+
+        public async Task<IEnumerable<T>> CheckNumber<T>(Expression<Func<T, DateTime>> filter = null) where T : class
+        {
+            if (filter != null)
+            {
+                return await _DbContext.Set<T>().OrderByDescending(filter).ToListAsync();
+            }
+            return await _DbContext.Set<T>().ToListAsync();
+        }
     }
 }

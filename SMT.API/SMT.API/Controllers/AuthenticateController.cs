@@ -111,18 +111,23 @@ namespace SMT.API.Controllers
             User user = await _userservice.FindByNameAsync(model.UserName);
             if (user != null)
             {
-
+                
                 if (_userservice.CheckPasswordAsync(user.UserName, model.Password))
                 {
-
-                    return Ok(new Iresult<User> { isSuccess = true, data = user });
+                    if (user.UserType == "A")
+                    {
+                        return Ok(new Iresult<User> { isSuccess = true, data = user });
+                    }
+                    else {
+                        return Ok(new Iresult<User> { isSuccess = false, Message = "Sorry! We could not verify your email or password. Please try again." });
+                    }
                 }
                 else
                 {
-                    return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid Password" });
+                    return Ok(new Iresult<User> { isSuccess = false, Message = "Sorry! We could not verify your email or password. Please try again." });
                 }
             }
-            return Ok(new Iresult<User> { isSuccess = false, Message = "Invalid UserName" });
+            return Ok(new Iresult<User> { isSuccess = false, Message = "Sorry! We could not verify your email or password. Please try again." });
 
         }
 
@@ -202,6 +207,7 @@ namespace SMT.API.Controllers
         public async Task<IActionResult> GetUser()
         {
             var Users = await _userservice.GetUsers();
+
             return Ok(Users);
         }
 

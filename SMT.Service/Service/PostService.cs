@@ -38,6 +38,7 @@ namespace SMT.Service.Service
             return model.Id;
         }
 
+       
 
         public async Task<PagedData<PostModel>> GetPost(int pageNo, int pageSize)  
         {
@@ -69,9 +70,14 @@ namespace SMT.Service.Service
             throw new NotImplementedException();
         }
 
+
+       
         public async Task<IEnumerable<PostModel>> GetPostIncludeAsync()
         {
-            var data = _repository.GetQueryable<Post>().Include(p =>p.PostedByNavigation);
+
+            
+
+           //ar data = _repository.GetQueryable<Post>().Include(p =>p.PostedByNavigation);
            
 
             var post = _repository.GetQueryable<Post>();

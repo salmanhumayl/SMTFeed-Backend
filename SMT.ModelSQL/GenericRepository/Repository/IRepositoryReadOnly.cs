@@ -14,5 +14,8 @@ namespace SMT.ModelSQL.GenericRepository.Repository
 
        IQueryable<T> GetQueryable<T>() where T : class;
        Task<PagedData<T>> GetPageModelAsync<T>(int pageNo, int pageSize, Expression<Func<T, DateTime>> filter = null, string[] includes = null) where T : class;
+
+        Task<IEnumerable<T>> CheckNumber<T>(Expression<Func<T, DateTime>> filter = null) where T : class;
+
     }
 }

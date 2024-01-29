@@ -20,6 +20,7 @@ namespace SMT.ModelSQL.Models
         public bool? IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? SubscriptionValidOn { get; set; }
+        public string UserType { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; }
     }

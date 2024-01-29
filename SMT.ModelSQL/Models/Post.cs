@@ -9,7 +9,7 @@ namespace SMT.ModelSQL.Models
     {
         public int Id { get; set; }
         public string Post1 { get; set; }
-        public DateTime  PostDate { get; set; }
+        public DateTime PostDate { get; set; }
         public int PostedBy { get; set; }
         public bool IsAttachment { get; set; }
         public bool? IsActive { get; set; }

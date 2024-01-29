@@ -13,6 +13,7 @@ namespace SMT.Service.Interface
     public interface IPost
     {
 
+       
         Task<PagedData<PostModel>> GetPost(int pageNo, int pageSize);
 
 
